@@ -3,7 +3,7 @@ const GameBoard = (function () {
 
   function setBoard() {
     for (let i = 0; i < 9; i++) {
-      board[i] = (null);
+      board[i] = null;
     }
   }
   setBoard();
@@ -35,7 +35,7 @@ const Game = (function () {
     }
 
     for (let i = 0; i < board.length; i++) {
-      if (i % 3 == 0 && checkSum(i, i + 3, 1)) {
+      if (i % 3 == 0 && checkSum(i, i + 2, 1)) {
         return true;
       }
 
@@ -54,31 +54,7 @@ const Game = (function () {
   }
   ////////////////////////
 
-  function getPlayerChoice(player) {
-    const choiceCoordinate = parseInt(
-      prompt(`Enter ${player.name} coordinate: `, 0)
-    );
-
-    if (board[choiceCoordinate] != null) {
-      return getPlayerChoice(player);
-    } 
-    return {
-      position: choiceCoordinate,
-    };
-  }
-
-  //////////////
-
-  function updateBoard(player) {
-    choice = getPlayerChoice(player);
-    if (board[choice.position] == null) {
-      board[choice.position] = player.marker;
-    }
-  }
-
-  /////////////////////
-
-  function hasNoSpace(board){
+  function hasNoSpace(board) {
     for (let i = 0; i < board.length; i++) {
       if (board[i] === null) {
         return false;
@@ -87,33 +63,85 @@ const Game = (function () {
     return true;
   }
 
-
   //////////////////////
-  function play(player) {
-    updateBoard(player);
-    console.log(board);
-
-    if (checkWinCondition(player, board)) {
-      alert(`${player.name} wins`);
-      GameBoard.setBoard();
-    }
-
-    if (hasNoSpace(board)) {
-      GameBoard.setBoard();
-      console.log(board);
-      alert(`game ends in a tie!`);
-    }
-    
-  }
-
   return {
-    play,
+    checkWinCondition,
+    hasNoSpace,
   };
 })();
 
-function Player(name, marker) {
-  this.name = name;
-  this.marker = marker;
-}
-const player1 = new Player("aditya", 1);
-const player2 = new Player("priyanshu", -1);
+(function () {
+  const board = GameBoard.getBoard();
+
+  function Player(name, marker) {
+    this.name = name;
+    this.marker = marker;
+  }
+  const player1 = new Player("player1", 1);
+  const player2 = new Player("player2", -1);
+
+  const container = document.querySelectorAll(".box");
+
+  let currentPlayer = player1;
+  let gameover = -1;
+
+  function handleClick(index) {
+    board[index] = currentPlayer.marker;
+
+    if (Game.checkWinCondition(currentPlayer, board)) {
+      setTimeout(() => {
+      gameover = 1;
+        if (currentPlayer.marker === -1) {
+          alert("Player X Wins !!!");
+        }
+        else{
+          alert("Player O wins");
+        }
+        GameBoard.setBoard();
+      }, 100); // 100 milliseconds delay
+    }
+
+    if (Game.hasNoSpace(board)) {
+      setTimeout(() => {
+        gameover = 1;
+        GameBoard.setBoard();
+        alert(`game ends in a tie!`);
+      }, 100); // 100 milliseconds delay
+    }
+    currentPlayer = currentPlayer === player1 ? player2 : player1;
+  }
+
+  container.forEach((element, index) => {
+    element.addEventListener("click", () => {
+      if (board[index] === null && gameover == -1) {
+        const newElement = document.createElement("p");
+        if (currentPlayer == player1) {
+          newElement.textContent = "x";
+          newElement.classList.add("x");
+        } else {
+          newElement.textContent = "o";
+          newElement.classList.add("o");
+        }
+        element.appendChild(newElement);
+        handleClick(index);
+      }
+    });
+  });
+
+  function clearContainer() {
+    container.forEach((element) => {
+      element.innerHTML = "";
+    });
+  }
+
+  const reset = document.querySelector(".reset");
+
+  reset.addEventListener("click",()=>{
+    currentPlayer = player1;
+    gameover = -1;
+    clearContainer();
+    GameBoard.setBoard();
+  })
+
+
+})();
