@@ -77,8 +77,18 @@ const Game = (function () {
     this.name = name;
     this.marker = marker;
   }
-  const player1 = new Player("player1", 1);
-  const player2 = new Player("player2", -1);
+
+  const player1 = new Player();
+  const player2 = new Player();
+  player1.marker = 1;
+  player2.marker = -1;
+
+  while (!player1.name) {
+     player1.name = prompt("Enter Player 1 Name : ", "");
+  }
+  while (!player2.name) {
+     player2.name = prompt("Enter Player 2 Name : ", "");
+  }
 
   const container = document.querySelectorAll(".box");
 
@@ -90,13 +100,8 @@ const Game = (function () {
 
     if (Game.checkWinCondition(currentPlayer, board)) {
       setTimeout(() => {
-      gameover = 1;
-        if (currentPlayer.marker === -1) {
-          alert("Player X Wins !!!");
-        }
-        else{
-          alert("Player O wins");
-        }
+        gameover = 1;
+        alert(`${currentPlayer.name} Wins!`);
         GameBoard.setBoard();
       }, 100); // 100 milliseconds delay
     }
@@ -136,12 +141,10 @@ const Game = (function () {
 
   const reset = document.querySelector(".reset");
 
-  reset.addEventListener("click",()=>{
+  reset.addEventListener("click", () => {
     currentPlayer = player1;
     gameover = -1;
     clearContainer();
     GameBoard.setBoard();
-  })
-
-
+  });
 })();
