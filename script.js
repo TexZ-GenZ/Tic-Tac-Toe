@@ -84,10 +84,10 @@ const Game = (function () {
   player2.marker = -1;
 
   while (!player1.name) {
-     player1.name = prompt("Enter Player 1 Name : ", "");
+    player1.name = prompt("Enter Player 1 Name : ", "");
   }
   while (!player2.name) {
-     player2.name = prompt("Enter Player 2 Name : ", "");
+    player2.name = prompt("Enter Player 2 Name : ", "");
   }
 
   const container = document.querySelectorAll(".box");
@@ -113,7 +113,9 @@ const Game = (function () {
         alert(`game ends in a tie!`);
       }, 100); // 100 milliseconds delay
     }
-    currentPlayer = currentPlayer === player1 ? player2 : player1;
+    setTimeout(() => {
+      currentPlayer = currentPlayer === player1 ? player2 : player1;
+    }, 150);
   }
 
   container.forEach((element, index) => {
