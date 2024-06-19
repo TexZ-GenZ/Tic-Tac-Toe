@@ -106,7 +106,7 @@ const Game = (function () {
       }, 100); // 100 milliseconds delay
     }
 
-    if (Game.hasNoSpace(board)) {
+    if (!Game.checkWinCondition(currentPlayer, board) && Game.hasNoSpace(board)) {
       setTimeout(() => {
         gameover = 1;
         GameBoard.setBoard();
